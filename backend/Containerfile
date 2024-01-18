@@ -1,0 +1,27 @@
+# Use an official Golang runtime as a parent image
+FROM golang:1-alpine as builder
+
+# Set the working directory to /app
+WORKDIR /app
+
+# Copy the module files
+COPY go.mod go.sum ./
+
+# Download the go dependencies
+RUN go mod download
+
+# Copy the source code
+COPY . .
+
+# Build a static application binary
+RUN CGO_ENABLED=0 GOOS=linux go build -o ./tmp/main
+
+## Development stage
+FROM builder as development
+RUN go install github.com/cosmtrek/air@latest
+CMD ["air", "-c", "air.toml"]
+
+## Production stage
+FROM scratch
+COPY --from=builder /app/tmp/main /app
+CMD ["/app"]
