@@ -10,14 +10,17 @@ A starting point for building a full stack application. The stack is:
 ### Development
 #### Start the application
 ```
-docker-compose up
+docker-compose up --build
 ```
 Which when complete, will expose these two ports:
 
 - Backend: `http://localhost:8000/`
 - Frontend: `http://localhost:3000/`
 
-Both the backend and frontend are hot reloadable.
+Both the backend and frontend are mostly hot reloadable.
+
+If you install a new npm package, you will have to run the build command again. (or `exec` into frontend container and install it there)
+
 
 #### Cleaning the database
 If you need to reinitialise the database with `schema.sql`, then remove the volume for the database:
