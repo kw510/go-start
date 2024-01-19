@@ -1,10 +1,25 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 
+type Version = {
+  version: string
+}
+
 function App() {
   const [count, setCount] = useState(0)
+  const [version, setVersion] = useState<Version | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    fetch("http://localhost:8000/v1")
+      .then((res) => res.json())
+      .then((data) => setVersion(data))
+      .catch((err) => setError(err.message))
+      .finally(() => setLoading(false))
+  }, [])
 
   return (
     <>
@@ -24,6 +39,11 @@ function App() {
         <p>
           Edit <code>src/App.tsx</code> and save to test HMR
         </p>
+        <>
+          {loading && <p>Loading...</p>}
+          {error && <p> {error}</p>}
+          {version && <p>Backend API is running version {version.version}.</p>}
+        </>
       </div>
       <p className="read-the-docs">
         Click on the Vite and React logos to learn more
